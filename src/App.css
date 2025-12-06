@@ -1,0 +1,9 @@
+body{
+    background: #0052d0;
+}
+
+@font-face {
+    font-family:Ropot ;
+    src: url("public\fonts\Robot\Robot-Thin.tff");
+    font-weight: 500;
+}
