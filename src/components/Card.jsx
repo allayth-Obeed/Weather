@@ -70,7 +70,14 @@ export default function Card() {
                     brokencloud
                   </Typography>
                   {/* MIN & MAX */}
-                  <div style={{ display: "flex", fontSize:"20px" , fontWeight:"100" ,marginRight: "32%" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      fontSize: "20px",
+                      fontWeight: "100",
+                      marginRight: "32%",
+                    }}
+                  >
                     <h5 style={{ margin: "0px" }}>الصغرى:34</h5>
                     <h5 style={{ margin: "0px 5px" }}>|</h5>
                     <h5 style={{ margin: "0px" }}>الكبرى:34</h5>
@@ -82,7 +89,7 @@ export default function Card() {
             </div>
           </div>
         </div>
-        <div style={{width:"100%" , textAlign:"left"}}>
+        <div style={{ width: "100%", textAlign: "left" }}>
           <Button variant="text" style={{ color: "white" }}>
             english
           </Button>
