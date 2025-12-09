@@ -1,7 +1,24 @@
 import { Button, Typography } from "@mui/material";
 import CloudIcon from "@mui/icons-material/Cloud";
+import { useEffect, useState } from "react";
 
+// external library
+import axios from "axios";
 export default function Card() {
+  const [temp, setTemp] = useState(null);
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.openweathermap.org/data/2.5/weather?lat=24.71355&lon=46.67530&appid=4051d3e944938c6cc7c19a0227f1bba1"
+      )
+      .then(function (response) {
+        const responseTemp = Math.round(response.data.main.temp - 272.15);
+        setTemp(responseTemp);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <div
@@ -57,7 +74,7 @@ export default function Card() {
                     variant="h1"
                     style={{ textAlaign: "right", paddingRight: "32%" }}
                   >
-                    40
+                    {temp}
                   </Typography>
                   {/* TODO:temp image */}
                   <Typography
