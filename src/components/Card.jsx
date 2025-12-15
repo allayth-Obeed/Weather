@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 export default function Card() {
   const [temp, setTemp] = useState(null);
+  // dont
   useEffect(() => {
     axios
       .get(
