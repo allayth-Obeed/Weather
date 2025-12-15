@@ -1,24 +1,56 @@
 import { Button, Typography } from "@mui/material";
 import CloudIcon from "@mui/icons-material/Cloud";
-import { useEffect, useState } from "react";
-
-// external library
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import moment from "moment/min/moment-with-locales";
+import { useTranslation } from "react-i18next";
+
+moment.locale("ar");
 export default function Card() {
-  const [temp, setTemp] = useState(null);
-  // dont
+  const [dateAndTime, setDateAndTime] = useState("");
+  const [temp, setTemp] = useState({
+    number: null,
+    description: "",
+    min: null,
+    max: null,
+    icon: "",
+  });
+  const cancelAxios = useRef(null);
+  const { t, i18n } = useTranslation();
   useEffect(() => {
+    setDateAndTime(moment().format("D MMMM YYYY - h:mm:ss"));
+    i18n.changeLanguage("ar");
     axios
       .get(
-        "https://api.openweathermap.org/data/2.5/weather?lat=24.71355&lon=46.67530&appid=4051d3e944938c6cc7c19a0227f1bba1"
+        "https://api.openweathermap.org/data/2.5/weather?lat=24.71355&lon=46.67530&appid=4051d3e944938c6cc7c19a0227f1bba1",
+        {
+          cancelToken: new axios.CancelToken((c) => {
+            cancelAxios.current = c;
+          }),
+        }
       )
-      .then(function (response) {
+      .then((response) => {
         const responseTemp = Math.round(response.data.main.temp - 272.15);
-        setTemp(responseTemp);
+        const min = Math.round(response.data.main.temp_min - 272.15);
+        const max = Math.round(response.data.main.temp_max - 272.15);
+        const description = response.data.weather[0].description;
+        const responseIcon = response.data.weather[0].icon;
+        setTemp({
+          number: responseTemp,
+          min: min,
+          max: max,
+          description: description,
+          icon: `https://openweathermap.org/img/wn/${responseIcon}@2x.png`,
+        });
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
+    return () => {
+      if (cancelAxios.current) {
+        cancelAxios.current();
+      }
+    };
   }, []);
   return (
     <>
@@ -54,9 +86,9 @@ export default function Card() {
               }}
               dir="rtl"
             >
-              <Typography variant="h2">الرياض</Typography>
+              <Typography variant="h2">{t("reyadh")}</Typography>
               <Typography variant="h5" marginRight="20px">
-                الاثنين 10-10- 2025
+                {dateAndTime}
               </Typography>
             </div>
             {/* card title */}
@@ -75,8 +107,10 @@ export default function Card() {
                     variant="h1"
                     style={{ textAlaign: "right", paddingRight: "32%" }}
                   >
-                    {temp}
+                    {temp.number}
                   </Typography>
+                  <img src={temp.icon} />
+
                   {/* TODO:temp image */}
                   <Typography
                     variant="h6"
@@ -85,7 +119,7 @@ export default function Card() {
                     fontSize="30px"
                     letterSpacing="2px"
                   >
-                    brokencloud
+                    {temp.description}
                   </Typography>
                   {/* MIN & MAX */}
                   <div
@@ -96,9 +130,9 @@ export default function Card() {
                       marginRight: "32%",
                     }}
                   >
-                    <h5 style={{ margin: "0px" }}>الصغرى:34</h5>
+                    <h5 style={{ margin: "0px" }}>الصغرى:{temp.min}</h5>
                     <h5 style={{ margin: "0px 5px" }}>|</h5>
-                    <h5 style={{ margin: "0px" }}>الكبرى:34</h5>
+                    <h5 style={{ margin: "0px" }}>الكبرى:{temp.max}</h5>
                   </div>
                 </div>
                 <CloudIcon style={{ fontSize: "200" }}></CloudIcon>
